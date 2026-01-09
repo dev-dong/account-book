@@ -1,7 +1,7 @@
 services:
   db:
     image: donghub/account_db:1.0
-    container_name: account_db
+    container_name: account-db
     ports:
       - "3306:3306"
     environment:
@@ -18,7 +18,9 @@ services:
     restart: always
 
   app:
-    image: donghub/account_app:1.1
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: account-app
     ports:
       - "8080:8080"
