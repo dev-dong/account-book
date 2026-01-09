@@ -43,6 +43,9 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # 4. Gradle build
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v3
         with:
