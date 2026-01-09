@@ -1,6 +1,6 @@
 services:
   db:
-    image: donghub/account_db:1.0
+    image: donghub/account_db:latest
     container_name: account-db
     ports:
       - "3306:3306"
