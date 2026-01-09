@@ -18,9 +18,7 @@ services:
     restart: always
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: donghub/account_app:latest
     container_name: account-app
     ports:
       - "8080:8080"
