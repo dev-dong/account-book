@@ -5,10 +5,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: account_db
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: dongho
-      MYSQL_PASSWORD: 1234
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -24,10 +24,10 @@ services:
       - "8080:8080"
       - "5005:5005"
     environment:
-      DB_HOST: db
-      DB_NAME: account_db
-      DB_USER: dongho
-      DB_PASSWORD: 1234
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
