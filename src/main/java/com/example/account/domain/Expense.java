@@ -1,10 +1,9 @@
 package com.example.account.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
@@ -13,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Expense {
 
     @Id
@@ -22,6 +22,9 @@ public class Expense {
     private String description;
     private Long amount;
     private String category;
+
+    @CreatedDate
+    @Column(updatable = false)
     private LocalDate createdAt;
 
     public static Expense create(String description, Long amount, String category) {
