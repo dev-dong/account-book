@@ -1,0 +1,37 @@
+services:
+  db:
+    image: donghub/account_db:1.0
+    container_name: account_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: account_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: dongho
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10
+    restart: always
+
+  app:
+    image: donghub/account_app:1.1
+    container_name: account-app
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    environment:
+      DB_HOST: db
+      DB_NAME: account_db
+      DB_USER: dongho
+      DB_PASSWORD: 1234
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
+    driver: local
