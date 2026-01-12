@@ -4,11 +4,13 @@ import com.example.account.domain.Expense;
 import com.example.account.dto.ExpenseRequest;
 import com.example.account.dto.ExpenseResponse;
 import com.example.account.service.ExpenseService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "지출 관리", description = "지출 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/expenses")

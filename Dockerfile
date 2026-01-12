@@ -14,4 +14,9 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
 ENV JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", \
+"-Xmx400m", \
+"-Xms400m", \
+"-XX:MaxMetaspaceSize=128m", \
+"-XX:+UseG1GC", \
+"-jar", "app.jar"]
