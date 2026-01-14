@@ -62,7 +62,7 @@ chown ubuntu:ubuntu ${APP_DIR}
 # 6. S3에서 설정 파일 다운로드
 echo "[6/6] S3에서 설정 파일 다운로드 중..."
 
-S3_BUCKET="my-account-app-bucket-20260114"
+S3_BUCKET="account-app-bucket-20260114"
 S3_PATH="dev"
 
 # 파일 다운로드
