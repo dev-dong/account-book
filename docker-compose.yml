@@ -25,8 +25,8 @@ services:
       - "5005:5005"
     environment:
       SPRING_PROFILES_ACTIVE: local
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DOC_DB_HOST}
+      DB_NAME: ${DOC_DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
