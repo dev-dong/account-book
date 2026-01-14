@@ -6,6 +6,7 @@ services:
       - "8080:8080"
       - "5005:5005"
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       DB_HOST: ${AWS_DB_HOST}
       DB_NAME: ${AWS_DB_NAME}
       DB_USER: ${AWS_DB_USER}

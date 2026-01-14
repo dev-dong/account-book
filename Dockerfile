@@ -13,6 +13,7 @@ WORKDIR /app
 
 COPY --from=build /app/build/libs/*.jar app.jar
 
+# docker 디버깅용
 ENV JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
 ENTRYPOINT ["java", \
 "-Xmx400m", \
