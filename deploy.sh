@@ -62,20 +62,23 @@ chown ubuntu:ubuntu ${APP_DIR}
 # 6. S3에서 설정 파일 다운로드
 echo "[6/6] S3에서 설정 파일 다운로드 중..."
 
-S3_BUCKET="my-account-app-bucket-20260112"
+S3_BUCKET="my-account-app-bucket-20260114"
 S3_PATH="dev"
 
 # 파일 다운로드
 cd ${APP_DIR}
 
-if [ -z "${S3_PATH}" ]; then
-    # 루트에서 다운로드
-    aws s3 cp s3://${S3_BUCKET}/docker-compose.yml . --region ap-northeast-2
-    aws s3 cp s3://${S3_BUCKET}/.env . --region ap-northeast-2
-else
-    # 폴더에서 다운로드
-    aws s3 sync s3://${S3_BUCKET}/${S3_PATH}/ . --region ap-northeast-2
-fi
+aws s3 cp s3://${S3_BUCKET}/docker-compose.yml . --region ap-northeast-2
+aws s3 cp s3://${S3_BUCKET}/.env . --region ap-northeast-2
+
+#if [ -z "${S3_PATH}" ]; then
+#    # 루트에서 다운로드
+#    aws s3 cp s3://${S3_BUCKET}/docker-compose.yml . --region ap-northeast-2
+#    aws s3 cp s3://${S3_BUCKET}/.env . --region ap-northeast-2
+#else
+#    # 폴더에서 다운로드
+#    aws s3 sync s3://${S3_BUCKET}/${S3_PATH}/ . --region ap-northeast-2
+#fi
 
 # 파일 권한 설정
 chmod 600 .env
