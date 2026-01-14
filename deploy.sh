@@ -41,15 +41,9 @@ systemctl enable docker
 # ubuntu 사용자를 docker 그룹에 추가
 usermod -aG docker ubuntu
 
-echo "Docker 설치 완료: $(docker --version)"
-
-# 3. Docker Compose 설치
+# 3. Docker Compose 호환성 설정
 echo "[3/6] Docker Compose 설치 중..."
-curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
-echo "Docker Compose 설치 완료: $(docker-compose --version)"
+ln -sf /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
 
 # 4. AWS CLI 설치
 echo "[4/6] AWS CLI 확인 중..."

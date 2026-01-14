@@ -2,7 +2,7 @@ spring:
   application:
     name: account-service
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:3306/${DB_NAME:account_db}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:account}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${DB_USER:dongho}
     password: ${DB_PASSWORD:1234}
     driver-class-name: com.mysql.cj.jdbc.Driver
