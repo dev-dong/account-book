@@ -75,3 +75,10 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/account_app:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/account_app:${{ github.sha }}
+
+      # 8. AWS 자격 증명 설정 (OIDC 방식)
+      - name: Configure AWS Credentials for China region audience
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with:
+          aws-region: ap-northeast-2
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
