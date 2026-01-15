@@ -4,18 +4,16 @@
 LOG_FILE="/var/log/user-data.log"
 exec > >(tee -a ${LOG_FILE}) 2>&1
 
-echo "=========================================="
-echo "EC2 초기 설정 시작: $(date)"
-echo "=========================================="
+echo "=== AMI 최적화 빌드 시작: $(date) ==="
 
-# 1. 시스템 업데이트
-echo "[1/6] 시스템 업데이트 중..."
+# 1. 시스템 업데이트 및 필수 도구 통합 설치
+echo "[1/4] 시스템 업데이트 및 필수 도구 설치..."
+export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
-apt-get upgrade -y
-apt-get install -y unzip ca-certificates curl
+apt-get install -y unzip ca-certificates curl gnupg
 
 # 2. Docker 설치
-echo "[2/6] Docker 설치 중..."
+echo "[2/4] Docker 엔진 설치..."
 
 # GPS 키 설정
 install -m 0755 -d /etc/apt/keyrings
@@ -34,54 +32,28 @@ EOF
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Docker 서비스 시작
+# Docker 서비스 최적화
 systemctl start docker
 systemctl enable docker
 
 # ubuntu 사용자를 docker 그룹에 추가
 usermod -aG docker ubuntu
 
-# 3. Docker Compose 호환성 설정
-echo "[3/6] Docker Compose 설치 중..."
+# docker-compose 하이픈 호환성 링크
 ln -sf /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
 
-# 4. AWS CLI 설치
-echo "[4/6] AWS CLI 확인 중..."
+# 3. AWS CLI v2 설치 최적화
+echo "[3/4] AWS CLI v2 설치..."
 cd /tmp
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-./aws/install
-echo "AWS CLI 설치 완료: $(aws --version)"
+unzip -q awscliv2.zip
+./aws/install --update
+rm -rf awscliv2.zip aws/
 
-# 5. 작업 디렉토리 생성
-echo "[5/6] 작업 디렉토리 생성 중..."
+# 4. 앱 디렉토리 선점 및 권한 부여
+echo "[4/4] 작업 디렉토리 준비..."
 APP_DIR="/home/ubuntu/app"
 mkdir -p ${APP_DIR}
 chown ubuntu:ubuntu ${APP_DIR}
 
-# 6. S3에서 설정 파일 다운로드
-echo "[6/6] S3에서 설정 파일 다운로드 중..."
-
-S3_BUCKET="account-app-bucket-20260114"
-S3_PATH="dev"
-
-# 파일 다운로드
-cd ${APP_DIR}
-
-aws s3 cp s3://${S3_BUCKET}/docker-compose.yml . --region ap-northeast-2
-aws s3 cp s3://${S3_BUCKET}/.env . --region ap-northeast-2
-
-#if [ -z "${S3_PATH}" ]; then
-#    # 루트에서 다운로드
-#    aws s3 cp s3://${S3_BUCKET}/docker-compose.yml . --region ap-northeast-2
-#    aws s3 cp s3://${S3_BUCKET}/.env . --region ap-northeast-2
-#else
-#    # 폴더에서 다운로드
-#    aws s3 sync s3://${S3_BUCKET}/${S3_PATH}/ . --region ap-northeast-2
-#fi
-
-# 파일 권한 설정
-chmod 600 .env
-chown ubuntu:ubuntu docker-compose.yml .env
-
-echo "설정 파일 다운로드 완료"
+echo "=== AMI 도구 빌드 완료: $(aws --version) ==="
