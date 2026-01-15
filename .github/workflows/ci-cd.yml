@@ -77,7 +77,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/account_app:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/account_app:${{ github.sha }}
 
-      # 8. AWS 자격 증명 설정 (OIDC 방식)
+      # 8. AWS 자격 증명 설정 (OIDC)
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5.1.1
         with:
