@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface MemberLocalCredentialRepository extends JpaRepository<MemberLocalCredential, Long> {
-    Optional<MemberLocalCredential> findMemberLocalCredentialByEmail(String email);
+    Optional<MemberLocalCredential> findByMemberId(Long memberId);
 }

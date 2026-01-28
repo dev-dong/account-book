@@ -29,8 +29,5 @@ public class MemberLocalCredential {
     private Member member;
 
     @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
     private String password;
 }

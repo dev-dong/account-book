@@ -38,24 +38,23 @@ public class LoginService {
 
     @Transactional
     public String localSignup(LoginRequest request) {
-        localRepository.findMemberLocalCredentialByEmail(request.email()).ifPresent(b -> {
+        memberRepository.findByEmail(request.email()).ifPresent(b -> {
             throw new IllegalArgumentException("Email already exists");
         });
 
         RoleGroups roleGroups = roleGroupsRepository.findRoleGroupsByRole(Role.USER).
                 orElseThrow(() -> new IllegalStateException("RoleGroups(USER) is empty"));
 
-        Member member = Member.createForLocalSignup(request.nickname());
+        Member member = Member.createSignup(request.email(), request.nickname());
         memberRepository.save(member);
 
         MemberLocalCredential credential = member.createLocalCredential(
-                request.email(),
                 passwordEncoder.encode(request.password()));
         localRepository.save(credential);
 
         MemberRoleGroup roleGroup = member.createRoleGroup(roleGroups);
         roleRepository.save(roleGroup);
 
-        return credential.getEmail();
+        return member.getEmail();
     }
 }

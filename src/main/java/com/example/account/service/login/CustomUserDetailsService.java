@@ -1,9 +1,10 @@
-package com.example.account.service;
+package com.example.account.service.login;
 
 import com.example.account.domain.entity.auth.Member;
 import com.example.account.domain.entity.auth.MemberLocalCredential;
 import com.example.account.domain.entity.auth.MemberRoleGroup;
 import com.example.account.repository.auth.MemberLocalCredentialRepository;
+import com.example.account.repository.auth.MemberRepository;
 import com.example.account.repository.auth.MemberRoleGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,22 +23,25 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberLocalCredentialRepository localRepository;
     private final MemberRoleGroupRepository roleGroupRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        MemberLocalCredential user = localRepository
-                .findMemberLocalCredentialByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
-        Member member = user.getMember();
+
+        MemberLocalCredential credential = localRepository.findByMemberId(member.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("Member credential not found"));
+
         List<MemberRoleGroup> roleGroups = roleGroupRepository.findByMember(member);
         List<SimpleGrantedAuthority> authorities = roleGroups.stream()
-                .map(rg -> new SimpleGrantedAuthority("ROLE" + rg.getRoleGroup().getRole().name()))
+                .map(rg -> new SimpleGrantedAuthority("ROLE_" + rg.getRoleGroup().getRole().name()))
                 .toList();
 
         return User.builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
+                .username(member.getEmail())
+                .password(credential.getPassword())
                 .authorities(authorities)
                 .build();
     }

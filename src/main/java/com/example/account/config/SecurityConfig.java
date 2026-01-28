@@ -1,5 +1,8 @@
 package com.example.account.config;
 
+import com.example.account.service.login.CustomOAuth2UserService;
+import com.example.account.service.login.CustomOidcUserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,13 +21,12 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final OAuth2DebugSuccessHandler successHandler;
-
-    public SecurityConfig(OAuth2DebugSuccessHandler successHandler) {
-        this.successHandler = successHandler;
-    }
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOidcUserService customOidcUserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,8 +39,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(successHandler))
+                .oauth2Login(oauth2 ->
+                        oauth2.userInfoEndpoint(userInfo -> userInfo
+                                        .userService(customOAuth2UserService)
+                                        .oidcUserService(customOidcUserService)
+                                )
+                                .successHandler(successHandler)
+                )
                 .build();
     }
 
