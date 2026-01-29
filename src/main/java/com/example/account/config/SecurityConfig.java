@@ -25,7 +25,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final OAuth2DebugSuccessHandler successHandler;
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService CustomOAuth2UserService;
     private final CustomOidcUserService customOidcUserService;
 
     @Bean
@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .oauth2Login(oauth2 ->
                         oauth2.userInfoEndpoint(userInfo -> userInfo
-                                        .userService(customOAuth2UserService)
+                                        .userService(CustomOAuth2UserService)
                                         .oidcUserService(customOidcUserService)
                                 )
                                 .successHandler(successHandler)

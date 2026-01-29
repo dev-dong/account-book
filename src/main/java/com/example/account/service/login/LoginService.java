@@ -1,15 +1,10 @@
 package com.example.account.service.login;
 
+import com.example.account.domain.auth.OAuthProvider;
 import com.example.account.domain.auth.Role;
-import com.example.account.domain.entity.auth.Member;
-import com.example.account.domain.entity.auth.MemberLocalCredential;
-import com.example.account.domain.entity.auth.MemberRoleGroup;
-import com.example.account.domain.entity.auth.RoleGroups;
+import com.example.account.domain.entity.auth.*;
 import com.example.account.dto.login.LoginRequest;
-import com.example.account.repository.auth.MemberLocalCredentialRepository;
-import com.example.account.repository.auth.MemberRepository;
-import com.example.account.repository.auth.MemberRoleGroupRepository;
-import com.example.account.repository.auth.RoleGroupsRepository;
+import com.example.account.repository.auth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class LoginService {
     private final MemberRepository memberRepository;
     private final MemberLocalCredentialRepository localRepository;
+    private final MemberOAuthAccountRepository oauthAccountRepository;
     private final MemberRoleGroupRepository roleRepository;
     private final RoleGroupsRepository roleGroupsRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,7 +34,7 @@ public class LoginService {
 
     @Transactional
     public String localSignup(LoginRequest request) {
-        memberRepository.findByEmail(request.email()).ifPresent(b -> {
+        oauthAccountRepository.findByProviderAndProviderUserId(OAuthProvider.LOCAL, request.email()).ifPresent(a -> {
             throw new IllegalArgumentException("Email already exists");
         });
 
@@ -49,8 +45,12 @@ public class LoginService {
         memberRepository.save(member);
 
         MemberLocalCredential credential = member.createLocalCredential(
+                request.email(),
                 passwordEncoder.encode(request.password()));
         localRepository.save(credential);
+
+        MemberOAuthAccount oAuthAccount = member.createOAuthAccount(OAuthProvider.LOCAL, request.email(), null);
+        oauthAccountRepository.save(oAuthAccount);
 
         MemberRoleGroup roleGroup = member.createRoleGroup(roleGroups);
         roleRepository.save(roleGroup);

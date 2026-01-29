@@ -18,7 +18,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", length = 100, unique = true)
+    @Column(name = "email", length = 100)
     private String email;
 
     @Column(name = "nickname", length = 50)
@@ -40,13 +40,14 @@ public class Member {
                 .build();
     }
 
-    public MemberLocalCredential createLocalCredential(String password) {
+    public MemberLocalCredential createLocalCredential(String email, String password) {
         if (this.id == null) {
             throw new IllegalStateException("Member must be saved before creating credentials");
         }
 
         return MemberLocalCredential.builder()
                 .member(this)
+                .loginEmail(email)
                 .password(password)
                 .build();
     }
@@ -60,7 +61,7 @@ public class Member {
                 .member(this)
                 .provider(provider)
                 .providerUserId(providerUserId)
-                .email(email)
+                .providerEmail(email)
                 .build();
     }
 

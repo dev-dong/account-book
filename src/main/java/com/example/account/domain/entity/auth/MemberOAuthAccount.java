@@ -48,11 +48,11 @@ public class MemberOAuthAccount {
     @Column(name = "provider_user_id", nullable = false, length = 100)
     private String providerUserId;
 
-    @Column()
-    private String email;
+    @Column(name = "provider_email", length = 100)
+    private String providerEmail;
 
     public void updateEmail(String email) {
-        this.email = email;
+        this.providerEmail = email;
     }
 
     @Override
